@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>STONE vous écoute 📸💬</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/solid.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/compressorjs/1.2.1/compressor.min.js"></script>
+  <style>
+    :root {
+      --primary: #7c4dff;
+      --primary-light: #b47cff;
+      --primary-dark: #3f1dcb;
+      --text: #2d3748;
+      --text-light: #4a5568; /* Amélioration du contraste */
+      --bg: #f8f9fa;
+      --card-bg: white;
+    }
+
+    [data-theme="dark"] {
+      --bg: #1a202c;
+      --text: #e2e8f0;
+      --text-light: #a0aec0;
+      --card-bg: #2d3748;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      padding: 2rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      padding: 2.5rem;
+      border-radius: 24px;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.05);
+      text-align: center;
+      max-width: 500px;
+      width: 100%;
+      margin: 0 auto;
+      position: relative;
+      overflow: hidden;
+      animation: fadeIn 0.6s ease forwards;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 8px;
+      background: linear-gradient(90deg, var(--primary), var(--primary-light));
+    }
+
+    .header {
+      margin-bottom: 2rem;
+    }
+
+    .icon {
+      font-size: 3rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      font-size: 1rem;
+      color: var(--text-light);
+      margin-bottom: 2rem;
+      font-weight: 400;
+    }
+
+    .message-box {
+      position: relative;
+      margin-bottom: 1.5rem;
+    }
+
+    textarea {
+      width: 100%;
+      height: 150px;
+      padding: 1.25rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      resize: none;
+      transition: all 0.3s ease;
+      font-family: 'Inter', sans-serif;
+    }
+
+    textarea:focus {
+      border-color: var(--primary-light);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(124, 77, 255, 0.1);
+    }
+
+    textarea::placeholder {
+      color: var(--text-light);
+    }
+
+    .upload-container {
+      margin: 1.5rem 0;
+      border: 2px dashed #e2e8f0;
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .upload-container:hover {
+      border-color: var(--primary-light);
+      background: rgba(124, 77, 255, 0.03);
+    }
+
+    .upload-container.active {
+      border-color: var(--primary);
+      background: rgba(124, 77, 255, 0.05);
+    }
+
+    .upload-label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .upload-icon {
+      font-size: 2rem;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .upload-text {
+      font-size: 0.9rem;
+      color: var(--text-light);
+    }
+
+    .upload-text strong {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    #file-input {
+      display: none;
+    }
+
+    .preview-container {
+      margin-top: 1rem;
+      display: none;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .preview-item {
+      position: relative;
+      margin-bottom: 0.5rem;
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 0.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      max-width: 150px;
+      animation: slideIn 0.3s ease;
+    }
+
+    .preview-content img {
+      max-width: 100px;
+      max-height: 100px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .preview-icon {
+      margin-bottom: 0.75rem;
+      color: var(--primary);
+    }
+
+    .preview-name {
+      font-size: 0.85rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 120px;
+    }
+
+    .remove-btn {
+      background: none;
+      border: none;
+      color: #e53e3e;
+      cursor: pointer;
+      margin-top: 0.5rem;
+    }
+
+    .remove-btn:focus {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      padding: 0.875rem 2rem;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      border: none;
+      font-size: 1rem;
+      font-weight: 500;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 6px rgba(124, 77, 255, 0.1);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(124, 77, 255, 0.15);
+    }
+
+    .btn:disabled {
+      background: #e2e8f0;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn i {
+      transition: transform 0.3s ease;
+    }
+
+    .btn:hover i {
+      transform: translateX(3px);
+    }
+
+    .status {
+      margin-top: 1.5rem;
+      font-weight: 500;
+      min-height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: opacity 0.3s ease;
+    }
+
+    .success {
+      color: #38a169;
+    }
+
+    .error {
+      color: #e53e3e;
+    }
+
+    .footer {
+      margin-top: 2rem;
+      font-size: 0.875rem;
+      color: var(--text-light);
+    }
+
+    .theme-toggle {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: none;
+      border: none;
+      color: var(--primary);
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    .theme-toggle:focus {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: #e2e8f0;
+      border-radius: 3px;
+      margin-top: 1rem;
+      overflow: hidden;
+      display: none;
+    }
+
+    .progress {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--primary-light));
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <button class="theme-toggle" aria-label="Basculer entre thème clair et sombre">
+        <i class="fas fa-moon"></i>
+      </button>
+      <div class="header">
+        <div class="icon">
+          <i class="fas fa-camera-retro"></i>
+        </div>
+        <h1 id="title">STONE VOUS ÉCOUTE</h1>
+        <p class="subtitle" id="subtitle">Envoyez messages, photos ou vidéos de manière anonyme</p>
+      </div>
+
+      <div class="message-box">
+        <textarea id="message" placeholder="Dites-nous tout ce que vous avez sur le cœur..." aria-label="Entrez votre message anonyme"></textarea>
+      </div>
+
+      <div class="upload-container" id="upload-container">
+        <label class="upload-label" for="file-input">
+          <div class="upload-icon">
+            <i class="fas fa-cloud-upload-alt"></i>
+          </div>
+          <div class="upload-text" id="upload-text">
+            <strong>Cliquez pour uploader</strong> ou glissez-déposez<br>
+            Photos (JPG, PNG) ou vidéos (MP4, MOV)
+          </div>
+          <input type="file" id="file-input" multiple accept="image/*,video/*" aria-label="Uploader des images ou vidéos">
+        </label>
+      </div>
+
+      <div class="preview-container" id="preview-container"></div>
+
+      <div class="progress-bar" id="progress-bar">
+        <div class="progress" id="progress"></div>
+      </div>
+
+      <button class="btn" id="send-btn" aria-label="Envoyer le message et les fichiers">
+        Envoyer <i class="fas fa-paper-plane"></i>
+      </button>
+
+      <div class="status" id="status" aria-live="polite"></div>
+
+      <div class="footer">
+        <p><i class="fas fa-lock"></i> Confidentialité garantie • Taille max: 20MB</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /**
+     * Gestionnaire principal pour l'upload et l'envoi de messages/fichiers
+     */
+    const UploadHandler = {
+      maxFileSize: 20 * 1024 * 1024, // 20MB
+      maxFiles: 5, // Limite de fichiers
+      files: [],
+      state: {
+        isUploading: false,
+        status: { message: '', type: '' },
+      },
+      translations: {
+        fr: {
+          title: 'STONE VOUS ÉCOUTE',
+          subtitle: 'Envoyez messages, photos ou vidéos de manière anonyme',
+          placeholder: 'Dites-nous tout ce que vous avez sur le cœur...',
+          uploadText: '<strong>Cliquez pour uploader</strong> ou glissez-déposez<br>Photos (JPG, PNG) ou vidéos (MP4, MOV)',
+          noContent: 'Veuillez écrire un message ou sélectionner un fichier',
+          fileTooLarge: 'Le fichier "{name}" dépasse 20MB',
+          invalidFormat: 'Format non supporté pour "{name}"',
+          tooManyFiles: 'Maximum {max} fichiers autorisés',
+          uploadSuccess: '{count} fichier(s) prêt(s) à être envoyé(s)',
+          sendSuccess: 'Envoi réussi !',
+          sendError: 'Erreur lors de l\'envoi',
+          networkError: 'Problème de connexion réseau',
+          fileError: 'Erreur lors de l\'envoi du fichier',
+        },
+        en: {
+          title: 'STONE IS LISTENING',
+          subtitle: 'Send messages, photos, or videos anonymously',
+          placeholder: 'Tell us what\'s on your mind...',
+          uploadText: '<strong>Click to upload</strong> or drag and drop<br>Photos (JPG, PNG) or videos (MP4, MOV)',
+          noContent: 'Please write a message or select a file',
+          fileTooLarge: 'File "{name}" exceeds 20MB',
+          invalidFormat: 'Unsupported format for "{name}"',
+          tooManyFiles: 'Maximum {max} files allowed',
+          uploadSuccess: '{count} file(s) ready to be sent',
+          sendSuccess: 'Sent successfully!',
+          sendError: 'Error during sending',
+          networkError: 'Network connection issue',
+          fileError: 'Error sending file',
+        },
+      },
+      currentLang: 'fr',
+
+      /**
+       * Initialise les événements et le thème
+       */
+      init() {
+        this.elements = {
+          uploadContainer: document.getElementById('upload-container'),
+          fileInput: document.getElementById('file-input'),
+          previewContainer: document.getElementById('preview-container'),
+          progressBar: document.getElementById('progress-bar'),
+          progress: document.getElementById('progress'),
+          sendBtn: document.getElementById('send-btn'),
+          status: document.getElementById('status'),
+          message: document.getElementById('message'),
+          themeToggle: document.querySelector('.theme-toggle'),
+        };
+
+        this.bindEvents();
+        this.setLanguage(this.currentLang);
+        this.elements.themeToggle.addEventListener('click', this.toggleTheme.bind(this));
+        this.elements.sendBtn.addEventListener('click', this.sendMessage.bind(this));
+      },
+
+      /**
+       * Lie les événements de drag-and-drop et de sélection de fichiers
+       */
+      bindEvents() {
+        this.elements.uploadContainer.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          this.elements.uploadContainer.classList.add('active');
+        });
+
+        this.elements.uploadContainer.addEventListener('dragleave', () => {
+          this.elements.uploadContainer.classList.remove('active');
+        });
+
+        this.elements.uploadContainer.addEventListener('drop', (e) => {
+          e.preventDefault();
+          this.elements.uploadContainer.classList.remove('active');
+          if (e.dataTransfer.files.length) {
+            this.elements.fileInput.files = e.dataTransfer.files;
+            this.handleFiles(e.dataTransfer.files);
+          }
+        });
+
+        this.elements.fileInput.addEventListener('change', () => {
+          if (this.elements.fileInput.files.length) {
+            this.handleFiles(this.elements.fileInput.files);
+          }
+        });
+      },
+
+      /**
+       * Bascule entre le thème clair et sombre
+       */
+      toggleTheme() {
+        document.body.dataset.theme = document.body.dataset.theme === 'dark' ? 'light' : 'dark';
+        this.elements.themeToggle.innerHTML = `<i class="fas fa-${document.body.dataset.theme === 'dark' ? 'sun' : 'moon'}"></i>`;
+      },
+
+      /**
+       * Définit la langue de l'interface
+       * @param {string} lang - Code de la langue ('fr' ou 'en')
+       */
+      setLanguage(lang) {
+        this.currentLang = lang;
+        document.getElementById('title').textContent = this.translations[lang].title;
+        document.getElementById('subtitle').textContent = this.translations[lang].subtitle;
+        this.elements.message.placeholder = this.translations[lang].placeholder;
+        document.getElementById('upload-text').innerHTML = this.translations[lang].uploadText;
+      },
+
+      /**
+       * Compresse une image
+       * @param {File} file - Fichier image à compresser
+       * @returns {Promise<File>} - Fichier compressé
+       */
+      compressImage(file) {
+        return new Promise((resolve, reject) => {
+          new Compressor(file, {
+            quality: 0.6,
+            maxWidth: 1200,
+            maxHeight: 1200,
+            success(result) {
+              resolve(result);
+            },
+            error(err) {
+              reject(err);
+            },
+          });
+        });
+      },
+
+      /**
+       * Valide et affiche les fichiers sélectionnés
+       * @param {FileList} files - Liste des fichiers
+       */
+      async handleFiles(files) {
+        this.files = [];
+        this.elements.previewContainer.innerHTML = '';
+
+        if (files.length > this.maxFiles) {
+          this.updateStatus(this.translations[this.currentLang].tooManyFiles.replace('{max}', this.maxFiles), 'error');
+          return;
+        }
+
+        const totalSize = Array.from(files).reduce((sum, file) => sum + file.size, 0);
+        if (totalSize > this.maxFileSize * this.maxFiles) {
+          this.updateStatus(this.translations[this.currentLang].tooManyFiles.replace('{max}', this.maxFiles), 'error');
+          return;
+        }
+
+        for (let i = 0; i < files.length; i++) {
+          let file = files[i];
+
+          if (file.size > this.maxFileSize) {
+            this.updateStatus(this.translations[this.currentLang].fileTooLarge.replace('{name}', file.name), 'error');
+            continue;
+          }
+
+          if (!file.type.match('image.*') && !file.type.match('video.*')) {
+            this.updateStatus(this.translations[this.currentLang].invalidFormat.replace('{name}', file.name), 'error');
+            continue;
+          }
+
+          if (file.type.match('image.*')) {
+            try {
+              file = await this.compressImage(file);
+            } catch (error) {
+              this.updateStatus(this.translations[this.currentLang].fileError, 'error');
+              continue;
+            }
+          }
+
+          this.files.push(file);
+          this.renderPreview(file, i);
+        }
+
+        if (this.files.length > 0) {
+          this.elements.previewContainer.style.display = 'flex';
+          this.updateStatus(this.translations[this.currentLang].uploadSuccess.replace('{count}', this.files.length), 'success');
+        } else if (files.length > 0) {
+          this.updateStatus(this.translations[this.currentLang].invalidFormat, 'error');
+        } else {
+          this.elements.previewContainer.style.display = 'none';
+          this.updateStatus('', '');
+        }
+      },
+
+      /**
+       * Affiche un aperçu pour un fichier
+       * @param {File} file - Fichier à prévisualiser
+       * @param {number} index - Index du fichier
+       */
+      renderPreview(file, index) {
+        const previewItem = document.createElement('div');
+        previewItem.className = 'preview-item';
+
+        const previewContent = document.createElement('div');
+        previewContent.className = 'preview-content';
+
+        if (file.type.match('image.*')) {
+          const img = document.createElement('img');
+          img.src = URL.createObjectURL(file);
+          img.alt = `Prévisualisation de ${file.name}`;
+          previewContent.appendChild(img);
+        } else {
+          const icon = document.createElement('div');
+          icon.className = 'preview-icon';
+          icon.innerHTML = '<i class="fas fa-video"></i>';
+          previewContent.appendChild(icon);
+        }
+
+        const name = document.createElement('div');
+        name.className = 'preview-name';
+        name.textContent = file.name;
+
+        const removeBtn = document.createElement('button');
+        removeBtn.className = 'remove-btn';
+        removeBtn.innerHTML = '<i class="fas fa-times"></i>';
+        removeBtn.setAttribute('aria-label', `Supprimer ${file.name}`);
+        removeBtn.onclick = () => this.removeFile(index);
+
+        previewItem.appendChild(previewContent);
+        previewItem.appendChild(name);
+        previewItem.appendChild(removeBtn);
+        this.elements.previewContainer.appendChild(previewItem);
+      },
+
+      /**
+       * Supprime un fichier de la liste
+       * @param {number} index - Index du fichier à supprimer
+       */
+      removeFile(index) {
+        this.files.splice(index, 1);
+        this.elements.previewContainer.innerHTML = '';
+
+        if (this.files.length > 0) {
+          this.files.forEach((file, i) => this.renderPreview(file, i));
+          this.updateStatus(this.translations[this.currentLang].uploadSuccess.replace('{count}', this.files.length), 'success');
+        } else {
+          this.elements.previewContainer.style.display = 'none';
+          this.updateStatus('', '');
+          this.elements.fileInput.value = '';
+        }
+      },
+
+      /**
+       * Met à jour le statut de l'interface
+       * @param {string} message - Message à afficher
+       * @param {string} type - Type de statut ('success', 'error', '')
+       */
+      updateStatus(message, type) {
+        this.state.status = { message, type };
+        this.elements.status.innerHTML = message ? `<i class="fas fa-${type === 'success' ? 'check' : 'times'}-circle"></i> ${message}` : '';
+        this.elements.status.className = `status ${type}`;
+      },
+
+      /**
+       * Envoie le message et les fichiers à Telegram
+       */
+      async sendMessage() {
+        const message = this.elements.message.value.trim();
+
+        if (!message && this.files.length === 0) {
+          this.updateStatus(this.translations[this.currentLang].noContent, 'error');
+          return;
+        }
+
+        this.state.isUploading = true;
+        this.elements.sendBtn.disabled = true;
+        this.elements.sendBtn.innerHTML = 'Envoi en cours <i class="fas fa-spinner fa-spin"></i>';
+
+        const chatId = "7965747090";
+        const token = "8235353007:AAE2Covrayd6hc47JEwnIb3SKanMcxfiIBE";
+
+        try {
+          if (this.files.length > 0) {
+            this.elements.progressBar.style.display = 'block';
+            for (let i = 0; i < this.files.length; i++) {
+              await this.sendFileToTelegram(this.files[i], chatId, token, i + 1, this.files.length);
+            }
+          }
+
+          if (message) {
+            await this.sendTextToTelegram(message, chatId, token);
+          }
+
+          this.updateStatus(this.translations[this.currentLang].sendSuccess, 'success');
+          this.elements.message.value = '';
+          this.files = [];
+          this.elements.previewContainer.innerHTML = '';
+          this.elements.previewContainer.style.display = 'none';
+          this.elements.fileInput.value = '';
+        } catch (error) {
+          let errorMessage = this.translations[this.currentLang].sendError;
+          if (error.message.includes('network')) {
+            errorMessage = this.translations[this.currentLang].networkError;
+          } else if (error.message.includes('file')) {
+            errorMessage = this.translations[this.currentLang].fileError;
+          }
+          this.updateStatus(errorMessage, 'error');
+          console.error('Erreur:', error);
+        } finally {
+          this.state.isUploading = false;
+          this.elements.sendBtn.disabled = false;
+          this.elements.sendBtn.innerHTML = 'Envoyer <i class="fas fa-paper-plane"></i>';
+          this.elements.progressBar.style.display = 'none';
+          this.elements.progress.style.width = '0%';
+        }
+      },
+
+      /**
+       * Envoie un message texte à Telegram
+       * @param {string} text - Texte à envoyer
+       * @param {string} chatId - ID du chat Telegram
+       * @param {string} token - Token du bot Telegram
+       */
+      async sendTextToTelegram(text, chatId, token) {
+        const url = `https://api.telegram.org/bot${token}/sendMessage`;
+        const payload = {
+          chat_id: chatId,
+          text: `📨 Nouveau message anonyme :\n\n${text}`,
+        };
+
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        if (!res.ok) throw new Error('Erreur lors de l\'envoi du texte');
+      },
+
+      /**
+       * Envoie un fichier à Telegram
+       * @param {File} file - Fichier à envoyer
+       * @param {string} chatId - ID du chat Telegram
+       * @param {string} token - Token du bot Telegram
+       * @param {number} current - Numéro du fichier actuel
+       * @param {number} total - Nombre total de fichiers
+       */
+      async sendFileToTelegram(file, chatId, token, current, total) {
+        const formData = new FormData();
+        formData.append('chat_id', chatId);
+        formData.append('caption', '📸 Fichier anonyme reçu');
+        formData.append(file.type.match('image.*') ? 'photo' : 'video', file);
+
+        const url = `https://api.telegram.org/bot${token}/${file.type.match('image.*') ? 'sendPhoto' : 'sendVideo'}`;
+
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 10000);
+
+        try {
+          const res = await fetch(url, {
+            method: 'POST',
+            body: formData,
+            signal: controller.signal,
+          });
+
+          clearTimeout(timeout);
+
+          if (!res.ok) throw new Error('Erreur lors de l\'envoi du fichier');
+
+          const percentComplete = (current / total) * 100;
+          this.elements.progress.style.width = `${percentComplete}%`;
+          this.updateStatus(
+            `Envoi du fichier ${current}/${total} : ${percentComplete.toFixed(0)}%`,
+            'success'
+          );
+        } catch (error) {
+          clearTimeout(timeout);
+          throw error;
+        }
+      },
+    };
+
+    UploadHandler.init();
+  </script>
+</body>
+</html>
